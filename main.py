@@ -5,16 +5,27 @@ import random
 import urllib2
 import cookielib
 import subprocess
+import os  
+import os.path 
 ids = {}
 global filename
 #init cookie
 cookie = cookielib.CookieJar()
 handler=urllib2.HTTPCookieProcessor(cookie)
 opener = urllib2.build_opener(handler)
+def rename():
+    path = "/home/wwwroot/www.niurenpeng.com/video/"
+    for parent, dirnames, filenames in os.walk(path):    
+        for filename in filenames:  
+            if filename.find(".mp4")==-1:  
+                newName = filename+".mp4" 
+                print(filename, "---->", newName)  
+                os.rename(os.path.join(parent, filename), os.path.join(parent, newName))  
+      
 def getUrl():
-    id = int(random.uniform(1, 4000))
+    id = int(random.uniform(1, 1000))
     while ids.has_key("id"+str(id)):
-        id = int(random.uniform(1, 4000))
+        id = int(random.uniform(1, 1000))
     ids["id"+str(id)] = 1
     url = "http://www.720xx.top/vod-detail-id-"+str(id)+".html"
     print "generete url:%s" %url
@@ -56,8 +67,8 @@ def getMp4(html):
     global filename
     cmd='wget -O /home/wwwroot/www.niurenpeng.com/video/%s.mp4 -t 2 %s' % (filename,mp4url)
     subprocess.call(cmd,shell=True)
-for i in range(0, 1000):
-    
+for i in range(0, 10000000):
+    rename
     cmd='find ./ -size 0 | xargs rm -f &'
     subprocess.call(cmd,shell=True) 
     cookie = cookielib.CookieJar()
@@ -71,6 +82,9 @@ for i in range(0, 1000):
         continue
     else:
         print urlPath
+        global filename
+        if os.path.exists('/home/wwwroot/www.niurenpeng.com/video/'+filename+'.mp4'):
+            continue
         html = getHtml(urlPath)
         getMp4(html)
         print "\n\n"
