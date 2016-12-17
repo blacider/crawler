@@ -54,9 +54,12 @@ def getMp4(html):
     mp4url=re.findall(re_mp4,html)[0]
     print mp4url
     global filename
-    cmd='wget -O ./video/%s -t 2 %s' % (filename+".mp4",mp4url)
+    cmd='wget -O /home/wwwroot/www.niurenpeng.com/video/%s.mp4 -t 2 %s' % (filename,mp4url)
     subprocess.call(cmd,shell=True)
-for i in range(0, 100):
+for i in range(0, 1000):
+    
+    cmd='find ./ -size 0 | xargs rm -f &'
+    subprocess.call(cmd,shell=True) 
     cookie = cookielib.CookieJar()
     handler=urllib2.HTTPCookieProcessor(cookie)
     opener = urllib2.build_opener(handler)
